@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Face Recognition Attendance System</title>
+
+<script defer src="https://cdn.jsdelivr.net/npm/face-api.js"></script>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+}
+
+body{
+background:#eef2f7;
+padding:20px;
+}
+
+.container{
+max-width:1100px;
+margin:auto;
+}
+
+h1{
+text-align:center;
+margin-bottom:20px;
+color:#2c3e50;
+}
+
+.card{
+background:white;
+padding:20px;
+border-radius:12px;
+box-shadow:0 4px 12px rgba(0,0,0,.1);
+margin-bottom:20px;
+}
+
+input{
+width:100%;
+padding:12px;
+margin:10px 0;
+border:1px solid #ccc;
+border-radius:8px;
+}
+
+button{
+padding:12px 20px;
+background:#27ae60;
+color:white;
+border:none;
+border-radius:8px;
+cursor:pointer;
+}
+
+button:hover{
+background:#1e8449;
+}
+
+video{
+width:100%;
+max-width:600px;
+border-radius:10px;
+border:3px solid #3498db;
+margin-top:20px;
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+margin-top:20px;
+}
+
+table th,
+table td{
+border:1px solid #ddd;
+padding:10px;
+text-align:center;
+}
+
+th{
+background:#2c3e50;
+color:white;
+}
+
+.status{
+font-size:18px;
+margin-top:15px;
+color:green;
+font-weight:bold;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>🎓 Face Recognition Attendance System</h1>
+
+<div class="card">
+
+<h2>Register Student</h2>
+
+<input
+type="text"
+id="studentName"
+placeholder="Enter Student Name">
+
+<button onclick="registerStudent()">
+Register
+</button>
+
+</div>
+
+<div class="card">
+
+<h2>Camera</h2>
+
+<button onclick="startCamera()">
+Start Camera
+</button>
+
+<br>
+
+<video
+id="video"
+autoplay
+muted>
+</video>
+
+<div
+class="status"
+id="status">
+Camera Not Started
+</div>
+
+</div>
+
+<div class="card">
+
+<h2>Attendance</h2>
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>Name</th>
+
+<th>Date</th>
+
+<th>Time</th>
+
+<th>Status</th>
+
+</tr>
+
+</thead>
+
+<tbody
+id="attendanceTable">
+
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+
+<script>
+
+let students=[];
+
+function registerStudent(){
+
+const name=
+document.getElementById("studentName").value;
+
+if(name===""){
+alert("Enter Student Name");
+return;
+}
+
+students.push(name);
+
+alert(name+" Registered Successfully");
+
+document.getElementById("studentName").value="";
+}
+
+async function startCamera(){
+
+const video=
+document.getElementById("video");
+
+const stream=
+await navigator.mediaDevices.getUserMedia({
+video:true
+});
+
+video.srcObject=stream;
+
+document.getElementById("status").innerHTML=
+"Camera Started";
+
+markAttendance();
+}
+
+function markAttendance(){
+
+setInterval(async()=>{
+
+if(students.length===0)
+return;
+
+const now=new Date();
+
+const student=students[0];
+
+const row=`
+<tr>
+
+<td>${student}</td>
+
+<td>${now.toLocaleDateString()}</td>
+
+<td>${now.toLocaleTimeString()}</td>
+
+<td>Present</td>
+
+</tr>
+`;
+
+document.getElementById("attendanceTable")
+.innerHTML=row;
+
+document.getElementById("status").innerHTML=
+"Face Detected (Demo) - Attendance Marked";
+
+},5000);
+
+}
+
+</script>
+
+</body>
+</html>
